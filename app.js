@@ -3,12 +3,14 @@ const { log } = require("node:console");
 const https = require("node:https");
 const bodyParcer = require("body-parser");
 const { parse } = require("node:querystring");
+require('dotenv').config();
 
 const app = express();
 app.use(bodyParcer.urlencoded({extended:true}));
 
 app.get("/",function(req,res){
     res.sendFile(__dirname + "/index.html");
+    // console.log(process.env.apikey);
 })
 
 app.post("/",function(req,res){
@@ -16,7 +18,7 @@ app.post("/",function(req,res){
     var lat
     var lon
 
-    const url = "https://api.openweathermap.org/data/2.5/weather?q="+ city +"&units=metric&appid=76e98d8b63b3fb9e1f8f8b2c4507ad22";
+    const url = "https://api.openweathermap.org/data/2.5/weather?q="+ city +"&units=metric&appid=" + process.env.apikey;
     https.get(url,function(respond){
         respond.on("data",function(data){
             const Thedata = JSON.parse(data);
@@ -24,7 +26,7 @@ app.post("/",function(req,res){
             lon = Thedata.coord.lon
             lat = Thedata.coord.lat
 
-            const murl = "https://api.openweathermap.org/data/2.5/weather?lat=" +lat+ "&lon=" + lon + "&units=metric&appid=76e98d8b63b3fb9e1f8f8b2c4507ad22";
+            const murl = "https://api.openweathermap.org/data/2.5/weather?lat=" +lat+ "&lon=" + lon + "&units=metric&appid=" + process.env.apikey;
             https.get(murl,function (respond) { 
 
                 respond.on("data",function(data){
